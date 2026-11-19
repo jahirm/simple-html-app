@@ -1,0 +1,20 @@
+name: deploy simple html on S3
+on: push
+
+jobs:
+    deploy:
+        runs-on: windows-latest
+        steps:
+            - name: checkout on VM
+              uses: actions/checkout@v4                        
+
+            - name: configure aws configuration
+              uses: aws-actions/configure-aws-credentials@v6
+              with:
+                aws-access-key-id: ${{ secrets.ACCESS_KEY }}
+                aws-secret-access-key: ${{ secrets.SECRET_KEY }}
+                aws-region: ${{ secrets.AWS_REGION }}
+
+            - name: upload file on S3
+              run: aws s3 sync . s3://${{ secrets.AWS_REGION }} --delete
+
